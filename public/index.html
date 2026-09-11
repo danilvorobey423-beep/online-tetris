@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0c1019">
+    <title>Online Tetris</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/socket.io/socket.io.js" defer></script>
+    <script src="/js/main.js" defer></script>
+  </head>
+  <body>
+    <main class="arena">
+      <header class="header">
+        <div>
+          <p class="eyebrow">HEAD TO HEAD · 1V1</p>
+          <h1>ONLINE <span>TETRIS</span></h1>
+        </div>
+        <p class="connection" id="connection-status" role="status" data-state="connecting">Connecting…</p>
+      </header>
+
+      <div class="match-layout">
+        <section class="player" aria-labelledby="your-title">
+          <div class="player-heading"><h2 id="your-title">YOU</h2><span>01</span></div>
+          <div class="board" role="img" aria-label="Your empty Tetris board, 10 columns by 20 rows">
+            <p class="board-label">YOUR FIELD</p>
+          </div>
+          <div class="player-footer"><span>NEXT <b>—</b></span><span>SCORE <b>—</b></span></div>
+        </section>
+
+        <section class="match-status" aria-labelledby="match-title">
+          <span class="versus" aria-hidden="true">VS</span>
+          <h2 id="match-title">A match<br>in the making.</h2>
+          <p>The arena is taking shape.<br>Gameplay is coming next.</p>
+          <a class="retry" id="retry-connection" href="/" hidden>Reconnect</a>
+        </section>
+
+        <section class="player opponent" aria-labelledby="opponent-title">
+          <div class="player-heading"><h2 id="opponent-title">OPPONENT</h2><span>02</span></div>
+          <div class="board" role="img" aria-label="Opponent empty Tetris board, 10 columns by 20 rows">
+            <p class="board-label">OPPONENT FIELD</p>
+          </div>
+          <div class="player-footer"><span>NEXT <b>—</b></span><span>SCORE <b>—</b></span></div>
+        </section>
+      </div>
+
+      <footer class="footer"><span>TWO PLAYERS. ONE WINNER.</span><span>EARLY PREVIEW</span></footer>
+      <noscript><p class="no-script">Enable JavaScript to connect and play.</p></noscript>
+    </main>
+  </body>
+</html>

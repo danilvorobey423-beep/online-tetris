@@ -4,6 +4,38 @@
 
 The project is a lightweight client/server browser game.
 
+## Implemented foundation (2026-09-11)
+
+The diagram and responsibilities below describe the target architecture. Currently implemented files are:
+
+```text
+server.js                    # Entry point, listening errors, signal shutdown
+src/server/config.js         # HOST/PORT defaults and validation
+src/server/app.js            # Express static files and Socket.IO lifecycle
+public/index.html            # Empty two-board arena preview
+public/css/main.css          # Arena layout and connection-state styles
+public/js/main.js            # Connection status and explicit reload recovery
+public/favicon.svg           # Local icon
+test/foundation.test.js       # Configuration, HTTP, socket, and startup tests
+```
+
+Application modules use ES modules. The browser entry is a deferred script using the Socket.IO bundle served by the same HTTP server. Only `public/` is exposed as static content. Static paths are resolved relative to the module location, not the shell's working directory.
+
+Express and Socket.IO share one Node HTTP server. HTTP polling and WebSocket are supported with the library's default upgrade behavior. Socket message payloads are limited to 16 KiB. There are no custom client-to-server gameplay handlers, player queue, match state, or persistence yet. Application rate limits and competitive validation remain work for M2/M3.
+
+## Current connection protocol
+
+| Event | Direction | Payload / validation | Behavior |
+| --- | --- | --- | --- |
+| `connection` | Socket.IO lifecycle on server | Socket.IO establishes the socket identity | Log connection; send `server:status` |
+| `server:status` | Server to client | `{ status: 'connected' }`; client checks object and status | Show `Connected`; this does not imply matchmaking |
+| `disconnect` | Socket.IO lifecycle on client/server | Socket.IO-provided reason | Server logs departure; client shows `Disconnected` and `Reconnect` |
+| `connect_error` | Socket.IO lifecycle on client | Error details are not rendered | Show `Unable to connect` and `Reconnect` |
+
+The page begins at `Connecting…`. A missing client bundle shows `Connection unavailable`. Automatic retries/reconnection are disabled; `Reconnect` reloads the page and creates a fresh socket. No match restoration is implied. Unknown custom client events have no application handler and no game-state effect.
+
+The CLI logs startup, actual bound address, and errors. Invalid configuration or a listen failure exits with a nonzero status. SIGINT/SIGTERM close Socket.IO and HTTP connections, with a five-second shutdown deadline. HTTP error responses contain generic text; diagnostic details remain in server logs.
+
 ```text
 Player 1 browser
         \

@@ -4,6 +4,36 @@
 
 Testing should provide confidence without turning the project into an infrastructure project. There is no CI requirement. Tests and checks are run locally.
 
+## Implemented foundation checks
+
+With Node.js 24.x and dependencies installed:
+
+```bash
+npm run check
+npm test
+```
+
+`npm run check` checks application JavaScript syntax. `npm test` uses the built-in Node test runner with isolated loopback servers and real Socket.IO clients. The eleven tests cover:
+
+- Default/overridden binding configuration and invalid values.
+- Public page/assets, repository file isolation, and safe malformed-path responses.
+- Two independent clients over polling and over WebSocket; disconnect cleanup.
+- Oversized socket payload rejection and continued HTTP availability.
+- Client notification when the server closes.
+- Actual CLI failure for occupied ports and invalid environment variables.
+- CLI startup from another working directory, real socket connectivity, and clean SIGTERM shutdown (Unix only; explicitly skipped on Windows).
+
+### Foundation browser checklist
+
+1. Run `npm start` and open `http://localhost:3000`.
+2. Confirm two empty board placeholders and `Connected`; gameplay is not available yet.
+3. Open another tab and confirm it connects independently.
+4. Confirm normal page load leaves no unexplained browser console errors.
+5. Stop the server; both pages should show `Disconnected` with a `Reconnect` link.
+6. Restart the server and click `Reconnect`; the page should return to `Connected`.
+
+All 11 tests passed in Ubuntu 26.04 / WSL 2 using Node.js 24.21.0 and npm 11.19.0 on 2026-09-11. On Windows, 10 pass and the Unix signal test is explicitly skipped. Windows Chromium browser checks passed against the WSL server on the default port 3000 and overridden loopback port 3100, including disconnect/restart/reconnect without console errors. Firefox verification remains pending. The gameplay and matchmaking checklists below apply as those features are implemented; they have not passed for this foundation.
+
 ## Minimum verification after server changes
 
 Run at least:

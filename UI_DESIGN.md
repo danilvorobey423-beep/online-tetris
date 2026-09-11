@@ -1,5 +1,11 @@
 # Multiplayer UI Design
 
+## Current implementation
+
+The foundation preview implements the two empty fields, local/opponent labels, NEXT/score placeholders, central preview message, and actual connection status. It explicitly states that gameplay is coming next. On disconnect, a `Reconnect` link reloads the page to create a fresh connection.
+
+The remaining sections describe the target experience. Matchmaking, countdown, playable pieces, attacks, results, and rematch controls are not implemented yet.
+
 ## Core concept
 
 The entire multiplayer experience should live on a single page. A player opens the game URL and immediately enters the game interface. There should be no separate lobby page, launcher, registration flow, room browser, or multi-step navigation in the initial version.

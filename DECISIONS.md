@@ -30,7 +30,7 @@ Use this file for durable technical choices that future work should respect. Do 
 
 **Reason:** Small codebase, direct browser support, straightforward WebSocket-style multiplayer, and simple operation under Ubuntu/WSL.
 
-**Status:** Preferred baseline. May change only for a clear technical reason.
+**Status:** Accepted and implemented for the foundation: Express 5.2.1 and Socket.IO 4.8.3. Express provides static file serving and HTTP error handling; Socket.IO provides the same-origin client bundle, transport negotiation, and connection lifecycle. These implement the already preferred baseline rather than a custom transport protocol.
 
 ---
 
@@ -61,3 +61,25 @@ Use this file for durable technical choices that future work should respect. Do 
 **Reason:** The product is small, latency-sensitive, and locally hosted.
 
 **Status:** Accepted
+
+---
+
+## D007 - Runtime and local verification
+
+**Decision:** Target Node.js 24.x, use ES modules, and manage dependencies with npm and a committed lockfile. Use Node's built-in test runner; `socket.io-client` is a development-only dependency for real polling/WebSocket integration tests.
+
+**Reason:** A single runtime line and module format keep local development predictable. The test client verifies actual network behavior without a separate test framework or handwritten Socket.IO protocol client.
+
+**Status:** Accepted. The foundation was verified on Windows with Node.js 24.19.0 / npm 11.11.1 and in Ubuntu 26.04 / WSL 2 with Node.js 24.21.0 / npm 11.19.0.
+
+**References:** [Node.js release policy](https://nodejs.org/en/about/previous-releases), [Express installation](https://expressjs.com/en/5x/starter/installing/), [Socket.IO with an HTTP server](https://socket.io/docs/v4/server-initialization/).
+
+---
+
+## D008 - Unprivileged WSL execution
+
+**Decision:** Run npm and the game server as the Linux user `tetris`, without sudo membership or a password login. Install the official Node.js runtime separately under `/opt`, with commands exposed through `/usr/local/bin`.
+
+**Reason:** Application execution does not require root. An explicit `wsl -d Ubuntu -u tetris` command provides a predictable development context without changing the distribution's default user or configuring automatic startup.
+
+**Status:** Accepted and verified for M0. Runtime binaries and account configuration remain outside the repository.
