@@ -2,9 +2,11 @@
 
 ## Current implementation
 
-The foundation preview implements the two empty fields, local/opponent labels, NEXT/score placeholders, central preview message, and actual connection status. It explicitly states that gameplay is coming next. On disconnect, a `Reconnect` link reloads the page to create a fresh connection.
+The M1 preview implements a playable local canvas board, NEXT piece, line/score counters, documented keyboard controls, and actual connection status. The center shows `Your move.` during local play, then `Round over.` and `Play again` after top-out. The opponent field explicitly says online matches are coming next. On disconnect, a `Reconnect` link reloads the page to create a fresh connection and local round.
 
-The remaining sections describe the target experience. Matchmaking, countdown, playable pieces, attacks, results, and rematch controls are not implemented yet.
+The local board receives keyboard focus on start/restart and when clicked. Game controls do not scroll the page while playing. At narrow widths, the center message moves below the two fields. The current layout was inspected in Chromium and Firefox, including 1366-pixel and 800-pixel Firefox viewports; final desktop layout refinement belongs to T40.
+
+The remaining sections describe the target multiplayer experience. Matchmaking, countdown, attacks, online results, and mutual rematch controls are not implemented yet. `Play again` only resets the local development preview.
 
 ## Core concept
 

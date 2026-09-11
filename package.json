@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "node --test",
-    "check": "node --check server.js && node --check src/server/app.js && node --check src/server/config.js && node --check public/js/main.js"
+    "check": "node scripts/check.mjs"
   },
   "dependencies": {
     "express": "5.2.1",

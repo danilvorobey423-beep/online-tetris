@@ -4,7 +4,7 @@
 
 Deliver the first playable browser-based 1v1 Tetris at `tetris.droradditive.com`, hosted on the owner's Windows laptop inside Ubuntu/WSL through Cloudflare Tunnel.
 
-As of 2026-09-11, M0 (T00-T03) is complete: the foundation server, arena preview, and socket connectivity are verified in Ubuntu 26.04 on WSL 2. Gameplay, multiplayer matches, and public deployment remain pending. The next task is T10.
+As of 2026-09-11, M0 and M1 are complete: the foundation server, socket connectivity, shared deterministic game core, and playable local preview are verified in Ubuntu/WSL with Chromium and Firefox browser checks. Multiplayer matches and public deployment remain pending. The next task is T20.
 
 This roadmap sequences the existing requirements; it does not replace them. [TASKS.md](TASKS.md) is the source of truth for task status and acceptance criteria. Follow [AGENTS.md](AGENTS.md) for implementation and [TESTING.md](TESTING.md) for verification.
 
@@ -13,7 +13,7 @@ This roadmap sequences the existing requirements; it does not replace them. [TAS
 | Stage | Outcome | Tasks | Depends on |
 | --- | --- | --- | --- |
 | M0 - Foundation (complete) | A page and socket connection work locally in Ubuntu/WSL | T00-T03 | None |
-| M1 - Game core | A complete local Tetris round works with deterministic rules | T10-T15 | M0 |
+| M1 - Game core (complete) | A complete local Tetris round works with deterministic rules | T10-T15 | M0 |
 | M2 - Multiplayer | Two browsers automatically join the same match and see each other | T20-T25 | M1 |
 | M3 - Competition | Validated attacks, top-out, and final results work end to end | T30-T34 | M2 |
 | M4 - Match experience | The single-page interface supports the complete match and rematch flow | T40-T44 | M3 |
@@ -69,7 +69,7 @@ Verify the completed application in its intended Ubuntu/WSL environment, then co
 
 | Decision | Resolve in | Must be settled before |
 | --- | --- | --- |
-| Initial rotation, spawn, gravity, locking, score/status, and top-out rules | T10 | T11-T15 |
+| Initial rotation, spawn, gravity, locking, score/status, and top-out rules (resolved in `GAME_RULES.md`) | T10 | T11-T15 |
 | Server validation approach and event ordering | T20 | T21-T25 and competitive implementation |
 | Attack table, garbage gaps/application, and simultaneous-loss policy | T30 | T31-T34 |
 | Rematch lifecycle and return to matchmaking after disconnect | T42 | T44 |
@@ -85,7 +85,7 @@ Use plain browser JavaScript and the small server baseline. Do not add frontend 
 
 ## Tracking completion
 
-- Work through the task dependencies in [TASKS.md](TASKS.md); the next pending task is T10.
+- Work through the task dependencies in [TASKS.md](TASKS.md); the next pending task is T20.
 - Check off a task only after its acceptance criteria pass; retain any failed or unavailable verification as pending.
 - Update the worklog with the change and evidence, and record durable technical decisions when made.
 - Update architecture, protocol, testing, deployment, and user instructions when the implementation makes those documents concrete.

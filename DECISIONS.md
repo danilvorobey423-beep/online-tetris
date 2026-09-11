@@ -83,3 +83,13 @@ Use this file for durable technical choices that future work should respect. Do 
 **Reason:** Application execution does not require root. An explicit `wsl -d Ubuntu -u tetris` command provides a predictable development context without changing the distribution's default user or configuring automatic startup.
 
 **Status:** Accepted and verified for M0. Runtime binaries and account configuration remain outside the repository.
+
+---
+
+## D009 - Shared deterministic game core and M1 baseline
+
+**Decision:** Keep tetrominoes, seeded 7-bag generation, board transitions, scoring, and top-out in plain ES modules under `src/shared/`, independent of the DOM and sockets. Serve this directory explicitly at `/shared/` so the browser and future server validation use the same implementation. Use a serializable unsigned 32-bit Mulberry32 generator with Fisher-Yates bags.
+
+**Reason:** A single deterministic rules implementation avoids divergent browser/server behavior without adding a build system or dependencies. The conservative baseline uses a 10 x 20 visible board, clockwise matrix rotation without kicks, fixed one-second gravity, and locking on a blocked downward step or hard drop. Exact rules are in `GAME_RULES.md`; optional mechanics remain in the backlog.
+
+**Status:** Implemented and verified for M1. The local preview selects a browser-generated seed and is not authoritative for online results. M2 will define the network authority model and server-issued seed; no client score or attack claims are accepted by this implementation.

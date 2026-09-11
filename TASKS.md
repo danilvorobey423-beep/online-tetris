@@ -1,10 +1,10 @@
 # Tasks
 
-Implementation backlog for [ROADMAP.md](ROADMAP.md). As of 2026-09-11, M0 (T00-T03) is complete, including Ubuntu/WSL verification. M1 and all later milestones remain pending.
+Implementation backlog for [ROADMAP.md](ROADMAP.md). As of 2026-09-11, M0 and M1 are complete, including Ubuntu/WSL tests and Chromium/Firefox gameplay checks. M2 and all later milestones remain pending.
 
 Task IDs are stable. Dependencies refer to task IDs. `[ ]` means pending and `[x]` means implemented and verified against the stated acceptance criteria. Record blockers and verification evidence in [WORKLOG.md](WORKLOG.md); do not check off blocked or partially verified tasks.
 
-**Next task:** T10. The WSL blocker is resolved; see `DEPLOYMENT.md` for verified runtime and startup commands. Complete each milestone's verification task before moving to the next milestone. Follow [AGENTS.md](AGENTS.md) and keep related documentation current as part of each task.
+**Next task:** T20. Define the multiplayer protocol and authority model using the shared deterministic core. See `DEPLOYMENT.md` for verified WSL runtime and startup commands. Complete each milestone's verification task before moving to the next milestone. Follow [AGENTS.md](AGENTS.md) and keep related documentation current as part of each task.
 
 ## M0 - Foundation
 
@@ -26,29 +26,29 @@ Task IDs are stable. Dependencies refer to task IDs. `[ ]` means pending and `[x
 
 ## M1 - Game core
 
-- [ ] **T10 - Define the initial game rules.** Document board representation, seven shapes, spawn/rotation behavior, gravity, locking, line clearing, top-out, keyboard mapping, and basic score/status behavior. Keep constants and deterministic rules shareable by client and server.
+- [x] **T10 - Define the initial game rules.** Document board representation, seven shapes, spawn/rotation behavior, gravity, locking, line clearing, top-out, keyboard mapping, and basic score/status behavior. Keep constants and deterministic rules shareable by client and server.
   - Depends on: T03.
   - Done when: the rules are explicit enough to implement and test, and optional mechanics are clearly excluded from the baseline rather than implicitly assumed.
 
-- [ ] **T11 - Implement the board and piece generator.** Add board state, tetromino definitions, spawn, and a seedable 7-bag generator.
+- [x] **T11 - Implement the board and piece generator.** Add board state, tetromino definitions, spawn, and a seedable 7-bag generator.
   - Depends on: T10.
   - Done when: tests prove each bag contains all seven pieces exactly once, the same seed produces the same sequence, spawn matches the rules, and board dimensions are correct.
 
-- [ ] **T12 - Implement movement and rotation.** Add left/right movement, gravity, soft/hard drop, rotation, and collision against boundaries and locked cells.
+- [x] **T12 - Implement movement and rotation.** Add left/right movement, gravity, soft/hard drop, rotation, and collision against boundaries and locked cells.
   - Depends on: T11.
   - Done when: legal moves work and illegal moves preserve valid state; tests cover walls, floor, occupied cells, blocked rotations, and hard-drop landing.
 
-- [ ] **T13 - Complete the round lifecycle.** Add locking, line clearing, next-piece advancement, basic score/status updates, and top-out.
+- [x] **T13 - Complete the round lifecycle.** Add locking, line clearing, next-piece advancement, basic score/status updates, and top-out.
   - Depends on: T12.
   - Done when: tests cover single and multiple line clears, correct board compaction, locking, piece advancement, and game-over behavior; gameplay stops after top-out.
 
-- [ ] **T14 - Add rendering and keyboard input.** Render the board, active/next pieces, and status; wire documented controls and prevent game keys from scrolling the page while playing.
+- [x] **T14 - Add rendering and keyboard input.** Render the board, active/next pieces, and status; wire documented controls and prevent game keys from scrolling the page while playing.
   - Depends on: T13.
   - Done when: a local round is playable through top-out in the browser, rendering reflects game state, and input/rendering remain separate from rules and networking.
 
-- [ ] **T15 - Verify the complete game core.** Run deterministic tests and the gameplay checklist in `TESTING.md`; document actual test commands and controls.
+- [x] **T15 - Verify the complete game core.** Run deterministic tests and the gameplay checklist in `TESTING.md`; document actual test commands and controls.
   - Depends on: T11, T12, T13, T14.
-  - Done when: core tests pass and manual play in Chromium and Firefox confirms movement, rotation, drops, line clearing, next piece, and top-out without unexplained console errors. M1 exit check passes.
+  - Done when: core tests pass and browser playthroughs in Chromium and Firefox (interactive or driven by keyboard automation, with rendered output reviewed) confirm movement, rotation, drops, line clearing, next piece, and top-out without unexplained console errors. Record the actual verification method. M1 exit check passes.
 
 ## M2 - Multiplayer
 

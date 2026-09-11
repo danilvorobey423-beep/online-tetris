@@ -4,7 +4,7 @@
 
 Testing should provide confidence without turning the project into an infrastructure project. There is no CI requirement. Tests and checks are run locally.
 
-## Implemented foundation checks
+## Implemented automated checks
 
 With Node.js 24.x and dependencies installed:
 
@@ -13,7 +13,7 @@ npm run check
 npm test
 ```
 
-`npm run check` checks application JavaScript syntax. `npm test` uses the built-in Node test runner with isolated loopback servers and real Socket.IO clients. The eleven tests cover:
+`npm run check` recursively checks application/test JavaScript syntax. `npm test` uses the built-in Node test runner. The eleven foundation tests use isolated loopback servers and real Socket.IO clients and cover:
 
 - Default/overridden binding configuration and invalid values.
 - Public page/assets, repository file isolation, and safe malformed-path responses.
@@ -23,16 +23,52 @@ npm test
 - Actual CLI failure for occupied ports and invalid environment variables.
 - CLI startup from another working directory, real socket connectivity, and clean SIGTERM shutdown (Unix only; explicitly skipped on Windows).
 
+The nineteen deterministic game tests in `test/game.test.js` cover:
+
+- All seven shapes, four rotations, and independent shape templates/board rows.
+- One of each piece per bag across 100 bags and three seeds, reproducible sequences, saved generator state, and rejected invalid seeds.
+- Centered spawn, boundaries, occupied cells, padding, legal movement, and blocked wall/floor/stack rotations.
+- Gravity timing and equivalent elapsed time split across frames, including automatic locking.
+- Soft/hard drop distance points, obstacle landing, locking, and next-piece advancement.
+- One through four line clears, board compaction, and the documented line points.
+- Blocked spawn, frozen game-over state, deterministic action replay, and fresh-round counters.
+
+The HTTP tests also load the shared game modules and verify that server source remains inaccessible.
+
 ### Foundation browser checklist
 
 1. Run `npm start` and open `http://localhost:3000`.
-2. Confirm two empty board placeholders and `Connected`; gameplay is not available yet.
+2. Confirm the local playable board, opponent placeholder, and `Connected`.
 3. Open another tab and confirm it connects independently.
 4. Confirm normal page load leaves no unexplained browser console errors.
 5. Stop the server; both pages should show `Disconnected` with a `Reconnect` link.
 6. Restart the server and click `Reconnect`; the page should return to `Connected`.
 
-All 11 tests passed in Ubuntu 26.04 / WSL 2 using Node.js 24.21.0 and npm 11.19.0 on 2026-09-11. On Windows, 10 pass and the Unix signal test is explicitly skipped. Windows Chromium browser checks passed against the WSL server on the default port 3000 and overridden loopback port 3100, including disconnect/restart/reconnect without console errors. Firefox verification remains pending. The gameplay and matchmaking checklists below apply as those features are implemented; they have not passed for this foundation.
+The M0 foundation passed all 11 tests in Ubuntu 26.04 / WSL 2 using Node.js 24.21.0 and npm 11.19.0 on 2026-09-11. On Windows, 10 passed and the Unix signal test was explicitly skipped. Windows Chromium browser checks passed against the WSL server on ports 3000 and 3100, including disconnect/restart/reconnect without console errors.
+
+## M1 gameplay browser checklist
+
+Run `npm start`, then exercise the page in current Chromium and Firefox. Interactive play or keyboard-driven browser automation may be used; record which was used and review the rendered result. Automation must exercise actual keyboard input and visible output, without adding test controls to the shipped page.
+
+1. Confirm a four-cell piece spawns, NEXT shows a piece, counters start at zero, and connection status is independent of gameplay.
+2. Leave the board visible for a second: gravity moves the piece without awarding drop points.
+3. Use Left/Right to move to each wall. Use Up to rotate in clear space; blocked rotations must not cross the wall, floor, or stack.
+4. Use Down for a one-cell soft drop and Space for an immediate landing/lock. Check score changes and NEXT advancement. Holding Space or Up must not repeatedly lock or rotate.
+5. Fill rows and confirm they disappear, higher cells shift down, and LINES/score update. Deterministic tests cover all four clear counts and exact scoring.
+6. Repeatedly hard-drop in the center until spawn is blocked. Confirm `Round over.`, a final frozen board/score, and `Play again`.
+7. Click `Play again`: the board/counters reset, the button hides, and keyboard focus returns to the board.
+8. In a short viewport, game keys must not scroll while playing. Inspect NEXT, counters, and controls for overlap and horizontal overflow. Check that form controls/buttons retain normal keyboard behavior when focused.
+9. Switch away and return: the local preview excludes hidden-tab gravity time. This is not the future online timing policy.
+10. Check the console for unexplained errors and warnings.
+
+### Recorded M1 verification (2026-09-11)
+
+- WSL: `npm run check` passed for 13 JavaScript files; `npm test` passed all 30 tests with no skips or failures.
+- Codex Chromium, connected to the WSL server: exercised movement, rotation, soft/hard drop, NEXT, top-out, and `Play again` through the visible page. Inspected the rendered board and later observed a cleared-line count of 1 during active play. No console warnings/errors.
+- Firefox 153.0 on Windows: used a separate headless browser with keyboard automation and reviewed a screenshot. The unmodified page passed real gravity/connection checks. A test-only seed of 42 and paused animation then made input/render assertions reproducible; every board cell, score, line counter, and NEXT label was checked after each key against a deterministic replay. Cleared 2 lines in 11 pieces (score 557), then verified top-out, ignored post-game input, restart/focus, held-Space repeat suppression, and scroll prevention. No console errors. Inspected the 1366 x 900 rendering and checked 800 x 700 for horizontal overflow.
+- The Firefox browser, bundled Playwright runtime, and temporary QA harness are external development tools, not project dependencies or shipped files. These were automated Firefox checks, not a claimed human Firefox play session. T15's verification wording permits either browser interaction method with the same gameplay coverage.
+
+Network matchmaking and competitive behavior remain unimplemented; the following multiplayer/remote checklists have not passed for M1.
 
 ## Minimum verification after server changes
 

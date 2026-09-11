@@ -71,12 +71,12 @@ test('HTTP serves the game and local assets without exposing the repository', as
   assert.match(await page.text(), /ONLINE <span>TETRIS/);
   assert.equal(page.headers.get('x-powered-by'), null);
 
-  for (const path of ['/css/main.css', '/js/main.js', '/favicon.svg', '/socket.io/socket.io.js']) {
+  for (const path of ['/css/main.css', '/js/main.js', '/favicon.svg', '/socket.io/socket.io.js', '/shared/game.js', '/shared/pieces.js', '/shared/constants.js']) {
     const response = await fetch(url + path);
     assert.equal(response.status, 200, path);
     await response.arrayBuffer();
   }
-  for (const path of ['/package.json', '/AGENTS.md', '/.env', '/.git/config', '/missing']) {
+  for (const path of ['/package.json', '/AGENTS.md', '/.env', '/.git/config', '/missing', '/src/server/app.js', '/shared/../server/app.js']) {
     const response = await fetch(url + path);
     assert.equal(response.status, 404, path);
     assert.equal(await response.text(), 'Not found.');

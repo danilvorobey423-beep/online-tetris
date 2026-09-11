@@ -8,7 +8,7 @@
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="/css/main.css">
     <script src="/socket.io/socket.io.js" defer></script>
-    <script src="/js/main.js" defer></script>
+    <script src="/js/main.js" type="module"></script>
   </head>
   <body>
     <main class="arena">
@@ -23,29 +23,33 @@
       <div class="match-layout">
         <section class="player" aria-labelledby="your-title">
           <div class="player-heading"><h2 id="your-title">YOU</h2><span>01</span></div>
-          <div class="board" role="img" aria-label="Your empty Tetris board, 10 columns by 20 rows">
-            <p class="board-label">YOUR FIELD</p>
+          <canvas id="game-board" class="board" width="300" height="600" tabindex="0" role="img" aria-label="Your Tetris board" aria-describedby="controls">Your browser needs canvas support to display the board.</canvas>
+          <div class="player-footer">
+            <div class="next-preview"><span>NEXT</span><canvas id="next-piece" width="84" height="54" role="img" aria-label="Next piece"></canvas></div>
+            <span>LINES <b id="lines">0</b></span><span>SCORE <b id="score">0</b></span>
           </div>
-          <div class="player-footer"><span>NEXT <b>—</b></span><span>SCORE <b>—</b></span></div>
         </section>
 
         <section class="match-status" aria-labelledby="match-title">
           <span class="versus" aria-hidden="true">VS</span>
-          <h2 id="match-title">A match<br>in the making.</h2>
-          <p>The arena is taking shape.<br>Gameplay is coming next.</p>
+          <p class="preview-label">GAMEPLAY PREVIEW</p>
+          <h2 id="match-title">Your move.</h2>
+          <p id="match-description">Try the controls. Online matches are coming next.</p>
+          <button class="retry" id="restart" type="button" hidden>Play again</button>
           <a class="retry" id="retry-connection" href="/" hidden>Reconnect</a>
         </section>
 
         <section class="player opponent" aria-labelledby="opponent-title">
           <div class="player-heading"><h2 id="opponent-title">OPPONENT</h2><span>02</span></div>
           <div class="board" role="img" aria-label="Opponent empty Tetris board, 10 columns by 20 rows">
-            <p class="board-label">OPPONENT FIELD</p>
+            <p class="board-label">ONLINE MATCHES COMING NEXT</p>
           </div>
           <div class="player-footer"><span>NEXT <b>—</b></span><span>SCORE <b>—</b></span></div>
         </section>
       </div>
 
-      <footer class="footer"><span>TWO PLAYERS. ONE WINNER.</span><span>EARLY PREVIEW</span></footer>
+      <p class="controls" id="controls"><span><kbd>←</kbd> <kbd>→</kbd> move</span><span><kbd>↑</kbd> rotate</span><span><kbd>↓</kbd> soft drop</span><span><kbd>SPACE</kbd> hard drop</span></p>
+      <footer class="footer"><span>TWO PLAYERS. ONE WINNER.</span><span>LOCAL GAMEPLAY PREVIEW</span></footer>
       <noscript><p class="no-script">Enable JavaScript to connect and play.</p></noscript>
     </main>
   </body>

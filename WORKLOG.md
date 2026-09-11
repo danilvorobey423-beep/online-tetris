@@ -94,3 +94,24 @@ Record meaningful completed work here. Do not use this file as a verbose transcr
 - Git diff whitespace and staged contents were reviewed before the requested commit.
 
 **Notes:** The owner explicitly authorized commits and pushes after verification, including future work in this task. No public deployment, automatic startup, or repository automation was added. The WSL preview remains running on port 3000. Firefox verification and all game/match features remain pending.
+
+---
+
+### 2026-09-11 - Complete M1 game core and playable local preview
+
+**Goal:** Continue the roadmap with T10-T15.
+
+**Changes:**
+- Defined the initial rules in `GAME_RULES.md`: 10 x 20 board, seven shapes, deterministic 7-bag, spawn/rotation, gravity/locking, line clears, drop/line points, top-out, and controls.
+- Implemented a serializable game core under `src/shared/`, independent of rendering, input, and networking. Added a narrowly scoped static mount for those browser/server modules.
+- Added the playable canvas board, NEXT preview, line/score counters, keyboard controls, game-over state, and local `Play again` reset. Kept online match features explicitly pending.
+- Added 19 deterministic game tests and extended static-file isolation checks. Made the syntax command cover all current source/test modules. No project dependencies were added.
+- Updated architecture, D009, startup/player instructions, UI status, testing, roadmap, and task status. Completed M1; T20 is next.
+
+**Verification:**
+- WSL Ubuntu 26.04, Node.js 24.21.0, npm 11.19.0: `npm run check` passed for 13 files; `npm test` passed 30/30, including real socket clients and CLI shutdown.
+- WSL startup served the updated ES modules and game page on port 3000.
+- Chromium visible-page checks exercised movement, rotation, drops, NEXT, top-out, and restart. Reviewed the rendering and observed a cleared-line count of 1 during active play. Console warnings/errors were empty.
+- Firefox 153.0 headless keyboard checks: real gravity on an unmodified page, then deterministic seed/paused-animation fixtures outside the shipped app. Checked every rendered cell and counter against a replay after each input. Cleared 2 lines in 11 pieces, score 557; verified top-out, frozen post-game state, reset/focus, held-Space behavior, and scrolling. Reviewed the rendered screenshot and checked narrow viewport overflow; no console errors.
+
+**Notes:** T15 now explicitly allows interactive or keyboard-automated browser playthroughs with rendered output reviewed, preserving its gameplay coverage and recording the actual method. Firefox checks used external development tools; no browser binaries, fixtures, or machine-specific QA files were added to the repository. Multiplayer authority, pairing, attacks, online results/rematch, and public hosting remain later milestones. The local WSL preview remains running.

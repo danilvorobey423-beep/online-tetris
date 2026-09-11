@@ -4,22 +4,34 @@
 
 The project is a lightweight client/server browser game.
 
-## Implemented foundation (2026-09-11)
+## Implemented foundation and game core (2026-09-11)
 
-The diagram and responsibilities below describe the target architecture. Currently implemented files are:
+The multiplayer diagram and responsibilities below describe the target architecture. Currently implemented files are:
 
 ```text
 server.js                    # Entry point, listening errors, signal shutdown
 src/server/config.js         # HOST/PORT defaults and validation
 src/server/app.js            # Express static files and Socket.IO lifecycle
-public/index.html            # Empty two-board arena preview
-public/css/main.css          # Arena layout and connection-state styles
-public/js/main.js            # Connection status and explicit reload recovery
+src/shared/constants.js      # Board size, gravity, and scoring constants
+src/shared/pieces.js         # Shape matrices and seeded 7-bag generation
+src/shared/game.js           # Board, actions, elapsed time, and round lifecycle
+public/index.html            # Playable local board and opponent placeholder
+public/css/main.css          # Arena layout, controls, and status styles
+public/js/main.js            # Local preview orchestration and frame loop
+public/js/input.js           # Keyboard mapping, focus guards, repeat handling
+public/js/renderer.js        # Board and next-piece canvas rendering
+public/js/network.js         # Connection status and explicit reload recovery
 public/favicon.svg           # Local icon
+scripts/check.mjs            # Recursive application/test syntax checks
 test/foundation.test.js       # Configuration, HTTP, socket, and startup tests
+test/game.test.js             # Deterministic game-rule tests
 ```
 
-Application modules use ES modules. The browser entry is a deferred script using the Socket.IO bundle served by the same HTTP server. Only `public/` is exposed as static content. Static paths are resolved relative to the module location, not the shell's working directory.
+Application modules use ES modules. The browser entry is a module script; the Socket.IO bundle is a deferred classic script from the same HTTP server. Static content is limited to `public/` and the explicit `/shared/` mount for `src/shared/`. Server source and repository documents are not served. Static paths are resolved relative to the module location, not the shell's working directory.
+
+The game core has no DOM, socket, or wall-clock dependencies. `createGame(seed)` creates serializable state, `applyAction(game, action)` mutates it for a legal input, and `advance(game, elapsedMs)` applies gravity. Both action/time functions report whether a visible change occurred. Shapes, generator state, board, counters, and spawn/top-out behavior follow [GAME_RULES.md](GAME_RULES.md). These functions currently receive internal state; they are not network payload validators.
+
+The M1 browser owns a temporary local round and draws it with canvas. Input, rendering, and connection status remain separate modules. The animation loop supplies elapsed time, caps a frame at 250 ms, and excludes hidden-tab time. This local preview timing policy is not an online authority model. M2 must introduce server-controlled seeds and match lifecycle; competitive validation remains a required M2/M3 decision and implementation. No score, board, or action is currently sent over the socket.
 
 Express and Socket.IO share one Node HTTP server. HTTP polling and WebSocket are supported with the library's default upgrade behavior. Socket message payloads are limited to 16 KiB. There are no custom client-to-server gameplay handlers, player queue, match state, or persistence yet. Application rate limits and competitive validation remain work for M2/M3.
 

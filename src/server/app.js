@@ -4,6 +4,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 
 const publicDirectory = fileURLToPath(new URL('../../public/', import.meta.url));
+const sharedDirectory = fileURLToPath(new URL('../shared/', import.meta.url));
 const MAX_MESSAGE_BYTES = 16 * 1024;
 
 export function createGameServer({ logger = console } = {}) {
@@ -16,6 +17,7 @@ export function createGameServer({ logger = console } = {}) {
     response.setHeader('X-Content-Type-Options', 'nosniff');
     next();
   });
+  app.use('/shared', express.static(sharedDirectory, { dotfiles: 'ignore' }));
   app.use(express.static(publicDirectory, { dotfiles: 'ignore' }));
   app.use((request, response) => {
     response.status(404).type('text').send('Not found.');
